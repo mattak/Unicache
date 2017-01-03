@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using UnityEngine;
 
 namespace UnicacheCore
 {
@@ -26,11 +25,9 @@ namespace UnicacheCore
 
                 if (!string.IsNullOrEmpty(currentPath) && !Directory.Exists(currentPath))
                 {
-                    Debug.Log("mkdir: " + currentPath);
                     Directory.CreateDirectory(currentPath);
                 }
             }
-            Debug.Log("final path: " + currentPath);
         }
 
         public static void CleanDirectory(string path)
