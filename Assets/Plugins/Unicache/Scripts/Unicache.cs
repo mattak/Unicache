@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using UniRx;
 
 namespace UnicacheCore
 {
@@ -15,23 +15,22 @@ namespace UnicacheCore
         {
         }
 
-        public void Fetch(string url, Action<byte[]> callback)
+        public IObservable<byte[]> Fetch(string url)
         {
             var path = this.Locator.CreatePath(url);
 
             if (this.HasCache(path))
             {
-                UnityEngine.Debug.Log("HasCache: " + UnicacheConfig.Directory + path);
-                callback.Invoke(this.GetCache(path));
+                return Observable.Return(this.GetCache(path));
             }
             else
             {
-                UnityEngine.Debug.Log("NoCache");
-                this.Handler.Fetch(url, data =>
-                {
-                    this.SetCache(path, data);
-                    callback.Invoke(this.GetCache(path));
-                });
+                return this.Handler.Fetch(url)
+                        .Do(data => this.SetCache(path, data))
+                        .Select(_ => this.GetCache(path))
+                        .SubscribeOn(Scheduler.ThreadPool)
+                        .ObserveOnMainThread()
+                    ;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using UniRx;
 
 namespace UnicacheCore
 {
@@ -7,7 +7,7 @@ namespace UnicacheCore
         ICacheHandler Handler { set; }
         ICacheLocator Locator { set; }
 
-        void Fetch(string url, Action<byte[]> callback);
+        IObservable<byte[]> Fetch(string url);
         void ClearAll();
 
         byte[] GetCache(string path /*, string hash */);
