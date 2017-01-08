@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections;
-using UnityEngine;
+using UniRx;
 using UnityEngine.Networking;
 
 namespace UnicacheCore
 {
-    public class DownloadHandler : ICacheHandler
+    public class SimpleDownloadHandler : ICacheHandler
     {
-        private MonoBehaviour mono;
-
-        public DownloadHandler(MonoBehaviour mono)
+        public IObservable<byte[]> Fetch(string url)
         {
-            this.mono = mono;
+            return Observable.FromCoroutine<byte[]>(observer =>
+                this.FetchCoroutine(
+                    url,
+                    result => observer.OnNext(result),
+                    error => observer.OnError(error)
+                )
+            );
         }
 
-        public void Fetch(string url, Action<byte[]> callback)
-        {
-            this.mono.StartCoroutine(this.FetchCoroutine(url, callback));
-        }
-
-        IEnumerator FetchCoroutine(string url, Action<byte[]> callback)
+        private IEnumerator FetchCoroutine(string url, Action<byte[]> callback, Action<Exception> error)
         {
             UnityWebRequest request = UnityWebRequest.Get(url);
 
@@ -31,7 +30,7 @@ namespace UnicacheCore
             }
             else
             {
-                Debug.Log("isFailure: " + request.isError + ", " + request.responseCode);
+                error(new Exception(request.error));
             }
         }
 
