@@ -1,7 +1,7 @@
 using System;
 using System.Security.Cryptography;
 
-namespace UnicacheCore
+namespace Unicache.Plugin
 {
     public class SimpleCacheLocator : ICacheLocator
     {

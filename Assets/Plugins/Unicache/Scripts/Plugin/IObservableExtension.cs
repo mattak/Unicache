@@ -1,7 +1,7 @@
 ﻿using UniRx;
 using UnityEngine;
 
-namespace UnicacheCore
+namespace Unicache.Plugin
 {
     public static class IObservableExtension
     {
