@@ -1,46 +1,51 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnicacheCore;
+using UniRx;
 
 namespace UnicacheExample
 {
     public class DownloadButton : MonoBehaviour
     {
         public Button LoadButton;
-        public Button ClearButton;
+        public Button ClearCacheButton;
+        public Button ClearImageButton;
         public RawImage Image;
+        public Text LoadingText;
         private IUnicache cache = new Unicache();
 
         void Start()
         {
-            if (this.LoadButton != null)
-            {
-                this.LoadButton.onClick.AddListener(LoadImage);
-            }
-
-            if (this.ClearButton != null)
-            {
-                this.ClearButton.onClick.AddListener(ClearImage);
-            }
-
-            this.cache.Handler = new DownloadHandler(this);
+            this.cache.Handler = new SimpleDownloadHandler();
             this.cache.Locator = new SimpleCacheLocator();
+
+            this.LoadButton.onClick.AddListener(Fetch);
+            this.ClearImageButton.onClick.AddListener(ClearImage);
+            this.ClearCacheButton.onClick.AddListener(ClearCache);
+            this.LoadingText.enabled = false;
         }
 
-        void LoadImage()
+        void Fetch()
         {
+            this.LoadingText.enabled = true;
+
             var url = "https://raw.githubusercontent.com/mattak/Unicache/master/art/sample.jpg";
 
-            this.cache.Fetch(url, data =>
-            {
-                var texture = new Texture2D(0, 0);
-                texture.filterMode = FilterMode.Bilinear;
-                texture.LoadImage(data);
-                this.Image.texture = texture;
-            });
+            this.cache.Fetch(url)
+                .ByteToTexture2D()
+                .Subscribe(texture =>
+                {
+                    this.LoadingText.enabled = false;
+                    this.Image.texture = texture;
+                });
         }
 
         void ClearImage()
+        {
+            this.Image.texture = null;
+        }
+
+        void ClearCache()
         {
             this.cache.ClearAll();
         }
