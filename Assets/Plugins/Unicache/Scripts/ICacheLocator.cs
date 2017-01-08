@@ -1,4 +1,4 @@
-﻿namespace UnicacheCore
+﻿namespace Unicache
 {
     // CacheLocator determinates save path from resource url
     public interface ICacheLocator

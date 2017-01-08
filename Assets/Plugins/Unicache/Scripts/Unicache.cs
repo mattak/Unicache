@@ -1,17 +1,14 @@
 ﻿using System.IO;
 using UniRx;
 
-namespace UnicacheCore
+namespace Unicache
 {
-    // Mockable
-    // Testable
-    // Without IEnumerator
-    public class Unicache : IUnicache
+    public class FileCache : IUnicache
     {
         public ICacheHandler Handler { get; set; }
         public ICacheLocator Locator { get; set; }
 
-        public Unicache()
+        public FileCache()
         {
         }
 

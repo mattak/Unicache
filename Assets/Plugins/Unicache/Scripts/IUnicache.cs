@@ -1,6 +1,6 @@
 ﻿using UniRx;
 
-namespace UnicacheCore
+namespace Unicache
 {
     public interface IUnicache
     {

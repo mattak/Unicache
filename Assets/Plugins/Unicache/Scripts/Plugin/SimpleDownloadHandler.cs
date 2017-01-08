@@ -3,7 +3,7 @@ using System.Collections;
 using UniRx;
 using UnityEngine.Networking;
 
-namespace UnicacheCore
+namespace Unicache.Plugin
 {
     public class SimpleDownloadHandler : ICacheHandler
     {

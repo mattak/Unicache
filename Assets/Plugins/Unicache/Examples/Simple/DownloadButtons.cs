@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnicacheCore;
+using Unicache;
+using Unicache.Plugin;
 using UniRx;
 
 namespace UnicacheExample
@@ -12,7 +13,7 @@ namespace UnicacheExample
         public Button ClearImageButton;
         public RawImage Image;
         public Text LoadingText;
-        private IUnicache cache = new Unicache();
+        private IUnicache cache = new FileCache();
 
         void Start()
         {

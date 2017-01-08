@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UnicacheCore
+namespace Unicache
 {
     public static class UnicacheConfig
     {

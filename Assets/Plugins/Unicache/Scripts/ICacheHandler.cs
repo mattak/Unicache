@@ -1,6 +1,6 @@
 ﻿using UniRx;
 
-namespace UnicacheCore
+namespace Unicache
 {
     // CacheHandler requests datasource
     public interface ICacheHandler

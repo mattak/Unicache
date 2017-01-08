@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace UnicacheCore
+namespace Unicache
 {
     public static class IO
     {

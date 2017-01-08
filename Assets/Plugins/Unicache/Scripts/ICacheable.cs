@@ -1,4 +1,4 @@
-﻿namespace UnicacheCore
+﻿namespace Unicache
 {
     public interface ICacheable
     {
