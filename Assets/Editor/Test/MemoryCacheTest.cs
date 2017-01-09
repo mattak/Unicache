@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Unicache.Plugin;
 using UniRx;
 
 namespace Unicache.Test
@@ -32,7 +33,7 @@ namespace Unicache.Test
         [Test]
         public void FetchTest()
         {
-            this.cache.Locator = new TestCacheLocator();
+            this.cache.UrlLocator = new SimpleUrlLocator();
             this.cache.Handler = new TestCacheHandler();
 
             int count = 0;
@@ -64,14 +65,6 @@ namespace Unicache.Test
             protected override IObservable<byte[]> AsAsync(IObservable<byte[]> observable)
             {
                 return observable;
-            }
-        }
-
-        class TestCacheLocator : ICacheLocator
-        {
-            public string CreatePath(string url)
-            {
-                return url;
             }
         }
 
