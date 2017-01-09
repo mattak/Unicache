@@ -7,6 +7,7 @@ namespace Unicache
     {
         public ICacheHandler Handler { get; set; }
         public IUrlLocator UrlLocator { get; set; }
+        public ICacheLocator CacheLocator { get; set; }
 
         private IDictionary<string, byte[]> MemoryMap = new Dictionary<string, byte[]>();
 
@@ -17,16 +18,17 @@ namespace Unicache
         public IObservable<byte[]> Fetch(string key)
         {
             var url = this.UrlLocator.CreateUrl(key);
+            var path = this.CacheLocator.CreateCachePath(key);
 
-            if (this.HasCache(key))
+            if (this.HasCache(path))
             {
-                return Observable.Return(this.GetCache(key));
+                return Observable.Return(this.GetCache(path));
             }
             else
             {
                 var observable = this.Handler.Fetch(url)
-                    .Do(data => this.SetCache(key, data))
-                    .Select(_ => this.GetCache(key));
+                    .Do(data => this.SetCache(path, data))
+                    .Select(_ => this.GetCache(path));
                 return this.AsAsync(observable);
             }
         }
