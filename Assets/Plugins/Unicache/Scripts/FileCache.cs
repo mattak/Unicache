@@ -22,18 +22,25 @@ namespace Unicache
             }
             else
             {
-                return this.Handler.Fetch(url)
-                        .Do(data => this.SetCache(path, data))
-                        .Select(_ => this.GetCache(path))
-                        .SubscribeOn(Scheduler.ThreadPool)
-                        .ObserveOnMainThread()
-                    ;
+                var observable = this.Handler.Fetch(url)
+                    .Do(data => this.SetCache(path, data))
+                    .Select(_ => this.GetCache(path));
+                return this.AsAsync(observable);
             }
         }
 
-        public bool HasCache(string path)
+        // this is for test
+        protected virtual IObservable<byte[]> AsAsync(IObservable<byte[]> observable)
         {
-            return File.Exists(UnicacheConfig.Directory + path);
+            return observable
+                    .SubscribeOn(Scheduler.ThreadPool)
+                    .ObserveOnMainThread()
+                ;
+        }
+
+        public void ClearAll()
+        {
+            IO.CleanDirectory(UnicacheConfig.Directory);
         }
 
         public byte[] GetCache(string path)
@@ -47,9 +54,9 @@ namespace Unicache
             IO.Write(UnicacheConfig.Directory + path, data);
         }
 
-        public void ClearAll()
+        public bool HasCache(string path)
         {
-            IO.CleanDirectory(UnicacheConfig.Directory);
+            return File.Exists(UnicacheConfig.Directory + path);
         }
     }
 }
