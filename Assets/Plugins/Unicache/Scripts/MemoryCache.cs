@@ -27,7 +27,7 @@ namespace Unicache
             else
             {
                 var observable = this.Handler.Fetch(url)
-                    .Do(_ => this.RemoveCachesByKey(key))
+                    .Do(_ => this.Delete(key))
                     .Do(data => this.SetCacheByPath(path, data))
                     .Select(_ => this.GetCacheByPath(path));
                 return this.AsAsync(observable);
@@ -42,7 +42,7 @@ namespace Unicache
                 .ObserveOnMainThread();
         }
 
-        private void RemoveCachesByKey(string key)
+        public void Delete(string key)
         {
             var allPathes = this.MemoryMap.Keys;
             var keyPathes = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
@@ -53,7 +53,7 @@ namespace Unicache
             }
         }
 
-        public void ClearAll()
+        public void Clear()
         {
             this.MemoryMap.Clear();
         }

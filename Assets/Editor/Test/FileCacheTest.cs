@@ -19,12 +19,12 @@ namespace Unicache.Test
             this.cache.UrlLocator = new SimpleUrlLocator();
             this.cache.Handler = new TestCacheHandler();
             this.cache.CacheLocator = new SimpleCacheLocator();
-            this.cache.ClearAll();
+            this.cache.Clear();
         }
 
         public void TearDown()
         {
-            this.cache.ClearAll();
+            this.cache.Clear();
         }
 
         [Test]
@@ -95,6 +95,18 @@ namespace Unicache.Test
 
             Assert.IsTrue(this.cache.HasCache("foo"));
             Assert.AreEqual(count, 2);
+        }
+
+        [Test]
+        public void DeleteTest()
+        {
+            Assert.IsFalse(this.cache.HasCache("foo"));
+
+            this.cache.SetCache("foo", new byte[] {0x01});
+            Assert.IsTrue(this.cache.HasCache("foo"));
+
+            this.cache.Delete("foo");
+            Assert.IsFalse(this.cache.HasCache("foo"));
         }
 
         class FileCacheForTest : FileCache

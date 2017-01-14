@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Unicache.Plugin
 {
@@ -11,7 +12,8 @@ namespace Unicache.Plugin
 
         public IEnumerable<string> GetSameKeyCachePathes(string key, IEnumerable<string> cachePathes)
         {
-            return new string[0];
+            var path = Digest.SHA1(key);
+            return cachePathes.Where(it => it.Equals(path));
         }
     }
 }
