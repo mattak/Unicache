@@ -49,7 +49,7 @@ namespace UnicacheExample.Simple
 
         void ClearCache()
         {
-            this.cache.ClearAll();
+            this.cache.Clear();
         }
     }
 }

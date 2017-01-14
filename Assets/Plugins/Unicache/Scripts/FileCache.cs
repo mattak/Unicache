@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UniRx;
 
 namespace Unicache
@@ -26,7 +27,7 @@ namespace Unicache
             else
             {
                 var observable = this.Handler.Fetch(url)
-                    .Do(_ => this.RemoveCachesByKey(key))
+                    .Do(_ => this.Delete(key))
                     .Do(data => this.SetCacheByPath(path, data))
                     .Select(_ => this.GetCacheByPath(path));
                 return this.AsAsync(observable);
@@ -41,20 +42,21 @@ namespace Unicache
                 .ObserveOnMainThread();
         }
 
-        private void RemoveCachesByKey(string key)
+        public void Clear()
         {
-            var allFiles = Directory.GetFiles(UnicacheConfig.Directory);
-            var keyFiles = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allFiles));
+            IO.CleanDirectory(UnicacheConfig.Directory);
+        }
+
+        public void Delete(string key)
+        {
+            var allPathes = Directory.GetFiles(UnicacheConfig.Directory)
+                .Select(fullpath => fullpath.Replace(UnicacheConfig.Directory, ""));
+            var keyFiles = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
 
             foreach (var file in keyFiles)
             {
-                File.Delete(file);
+                File.Delete(UnicacheConfig.Directory + file);
             }
-        }
-
-        public void ClearAll()
-        {
-            IO.CleanDirectory(UnicacheConfig.Directory);
         }
 
         public byte[] GetCache(string key)
