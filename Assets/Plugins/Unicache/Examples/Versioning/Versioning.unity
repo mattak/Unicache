@@ -313,7 +313,7 @@ MonoBehaviour:
   DownloadButton: {fileID: 3744361}
   VersionUpButton: {fileID: 2096940687}
   ClearButton: {fileID: 1118872952}
-  Image1: {fileID: 1430510892}
+  Image: {fileID: 1430510892}
 --- !u!1 &236317359
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ using UniRx;
 
 namespace UnicacheExample.Simple
 {
-    public class DownloadButtons : MonoBehaviour
+    public class SimpleComponents : MonoBehaviour
     {
         public Button LoadButton;
         public Button ClearCacheButton;
