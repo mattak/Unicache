@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using NUnit.Framework;
 using Unicache.Plugin;
 using UniRx;
@@ -8,11 +9,16 @@ namespace Unicache.Test
     public class FileCacheTest
     {
         private IUnicache cache;
+        private ICacheLocator CacheLocator;
 
         [SetUp]
         public void SetUp()
         {
             this.cache = new FileCacheForTest();
+            this.CacheLocator = new SimpleCacheLocator();
+            this.cache.UrlLocator = new SimpleUrlLocator();
+            this.cache.Handler = new TestCacheHandler();
+            this.cache.CacheLocator = new SimpleCacheLocator();
             this.cache.ClearAll();
         }
 
@@ -24,7 +30,7 @@ namespace Unicache.Test
         [Test]
         public void HasCacheTest()
         {
-            var path = UnicacheConfig.Directory + "foo";
+            var path = UnicacheConfig.Directory + this.CacheLocator.CreateCachePath("foo");
 
             Assert.IsFalse(this.cache.HasCache("foo"));
 
@@ -41,7 +47,7 @@ namespace Unicache.Test
         [Test]
         public void GetCacheTest()
         {
-            var path = UnicacheConfig.Directory + "foo";
+            var path = UnicacheConfig.Directory + this.CacheLocator.CreateCachePath("foo");
 
             Assert.Throws<FileNotFoundException>(() => { this.cache.GetCache("foo"); });
 
@@ -67,32 +73,27 @@ namespace Unicache.Test
         [Test]
         public void FetchTest()
         {
-            this.cache.UrlLocator = new SimpleUrlLocator();
-            this.cache.Handler = new TestCacheHandler();
-            this.cache.CacheLocator = new SimpleCacheLocator();
-            var cachePath = new SimpleCacheLocator().CreateCachePath("url");
-
             int count = 0;
-            Assert.IsFalse(this.cache.HasCache(cachePath));
+            Assert.IsFalse(this.cache.HasCache("foo"));
 
-            this.cache.Fetch("url")
+            this.cache.Fetch("foo")
                 .Subscribe(data =>
                 {
                     count++;
                     Assert.AreEqual(data, new byte[] {0x01});
                 });
 
-            Assert.IsTrue(this.cache.HasCache(cachePath));
+            Assert.IsTrue(this.cache.HasCache("foo"));
             Assert.AreEqual(count, 1);
 
-            this.cache.Fetch("url")
+            this.cache.Fetch("foo")
                 .Subscribe(data =>
                 {
                     count++;
                     Assert.AreEqual(data, new byte[] {0x01});
                 });
 
-            Assert.IsTrue(this.cache.HasCache(cachePath));
+            Assert.IsTrue(this.cache.HasCache("foo"));
             Assert.AreEqual(count, 2);
         }
 
@@ -106,9 +107,14 @@ namespace Unicache.Test
 
         class TestCacheHandler : ICacheHandler
         {
-            public IObservable<byte[]> Fetch(string url)
+            public IObservable<byte[]> Fetch(string key)
             {
-                return Observable.Return(new byte[] {0x01});
+                if (key.Equals("foo"))
+                {
+                    return Observable.Return(new byte[] {0x01});
+                }
+
+                return Observable.Throw<byte[]>(new Exception("not matched key"));
             }
         }
     }

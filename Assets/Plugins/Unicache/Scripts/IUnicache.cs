@@ -11,8 +11,8 @@ namespace Unicache
         IObservable<byte[]> Fetch(string key);
         void ClearAll();
 
-        byte[] GetCache(string path);
-        void SetCache(string path, byte[] data);
-        bool HasCache(string path);
+        byte[] GetCache(string key);
+        void SetCache(string key, byte[] data);
+        bool HasCache(string key);
     }
 }
