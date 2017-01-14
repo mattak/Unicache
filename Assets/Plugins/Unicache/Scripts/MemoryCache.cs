@@ -20,16 +20,16 @@ namespace Unicache
             var url = this.UrlLocator.CreateUrl(key);
             var path = this.CacheLocator.CreateCachePath(key);
 
-            if (this.HasCache(path))
+            if (this.HasCacheByPath(path))
             {
-                return Observable.Return(this.GetCache(path));
+                return Observable.Return(this.GetCacheByPath(path));
             }
             else
             {
                 var observable = this.Handler.Fetch(url)
                     .Do(_ => this.RemoveCachesByKey(key))
-                    .Do(data => this.SetCache(path, data))
-                    .Select(_ => this.GetCache(path));
+                    .Do(data => this.SetCacheByPath(path, data))
+                    .Select(_ => this.GetCacheByPath(path));
                 return this.AsAsync(observable);
             }
         }
@@ -58,17 +58,32 @@ namespace Unicache
             this.MemoryMap.Clear();
         }
 
-        public byte[] GetCache(string path)
+        public byte[] GetCache(string key)
+        {
+            return this.GetCacheByPath(this.CacheLocator.CreateCachePath(key));
+        }
+
+        public byte[] GetCacheByPath(string path)
         {
             return this.MemoryMap[path];
         }
 
-        public void SetCache(string path, byte[] data)
+        public void SetCache(string key, byte[] data)
+        {
+            this.SetCacheByPath(this.CacheLocator.CreateCachePath(key), data);
+        }
+
+        public void SetCacheByPath(string path, byte[] data)
         {
             this.MemoryMap[path] = data;
         }
 
-        public bool HasCache(string path)
+        public bool HasCache(string key)
+        {
+            return this.HasCacheByPath(this.CacheLocator.CreateCachePath(key));
+        }
+
+        public bool HasCacheByPath(string path)
         {
             return this.MemoryMap.ContainsKey(path);
         }
