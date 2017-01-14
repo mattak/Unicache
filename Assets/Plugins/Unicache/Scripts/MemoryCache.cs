@@ -27,17 +27,30 @@ namespace Unicache
             else
             {
                 var observable = this.Handler.Fetch(url)
+                    .Do(_ => this.RemoveCachesByKey(key))
                     .Do(data => this.SetCache(path, data))
                     .Select(_ => this.GetCache(path));
                 return this.AsAsync(observable);
             }
         }
 
+        // this is for test
         protected virtual IObservable<byte[]> AsAsync(IObservable<byte[]> observable)
         {
             return observable
                 .SubscribeOn(Scheduler.ThreadPool)
                 .ObserveOnMainThread();
+        }
+
+        private void RemoveCachesByKey(string key)
+        {
+            var allPathes = this.MemoryMap.Keys;
+            var keyPathes = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
+
+            foreach (var path in keyPathes)
+            {
+                this.MemoryMap.Remove(path);
+            }
         }
 
         public void ClearAll()
