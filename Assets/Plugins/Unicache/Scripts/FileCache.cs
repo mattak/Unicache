@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using UniRx;
 
 namespace Unicache
@@ -6,15 +7,17 @@ namespace Unicache
     public class FileCache : IUnicache
     {
         public ICacheHandler Handler { get; set; }
-        public ICacheLocator Locator { get; set; }
+        public IUrlLocator UrlLocator { get; set; }
+        public ICacheLocator CacheLocator { get; set; }
 
         public FileCache()
         {
         }
 
-        public IObservable<byte[]> Fetch(string url)
+        public IObservable<byte[]> Fetch(string key)
         {
-            var path = this.Locator.CreatePath(url);
+            var url = this.UrlLocator.CreateUrl(key);
+            var path = this.CacheLocator.CreateCachePath(key);
 
             if (this.HasCache(path))
             {
@@ -23,6 +26,7 @@ namespace Unicache
             else
             {
                 var observable = this.Handler.Fetch(url)
+                    .Do(_ => this.RemoveCachesByKey(key))
                     .Do(data => this.SetCache(path, data))
                     .Select(_ => this.GetCache(path));
                 return this.AsAsync(observable);
@@ -33,9 +37,19 @@ namespace Unicache
         protected virtual IObservable<byte[]> AsAsync(IObservable<byte[]> observable)
         {
             return observable
-                    .SubscribeOn(Scheduler.ThreadPool)
-                    .ObserveOnMainThread()
-                ;
+                .SubscribeOn(Scheduler.ThreadPool)
+                .ObserveOnMainThread();
+        }
+
+        private void RemoveCachesByKey(string key)
+        {
+            var allFiles = Directory.GetFiles(UnicacheConfig.Directory);
+            var keyFiles = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allFiles));
+
+            foreach (var file in keyFiles)
+            {
+                File.Delete(file);
+            }
         }
 
         public void ClearAll()

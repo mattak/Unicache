@@ -5,13 +5,14 @@ namespace Unicache
     public interface IUnicache
     {
         ICacheHandler Handler { set; }
-        ICacheLocator Locator { set; }
+        IUrlLocator UrlLocator { set; }
+        ICacheLocator CacheLocator { set; }
 
-        IObservable<byte[]> Fetch(string url);
+        IObservable<byte[]> Fetch(string key);
         void ClearAll();
 
-        byte[] GetCache(string path /*, string hash */);
-        void SetCache(string path /*, string hash*/, byte[] data);
-        bool HasCache(string path /*, string hash*/);
+        byte[] GetCache(string path);
+        void SetCache(string path, byte[] data);
+        bool HasCache(string path);
     }
 }

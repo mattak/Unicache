@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Unicache.Plugin;
 using UniRx;
 
 namespace Unicache.Test
@@ -32,11 +33,13 @@ namespace Unicache.Test
         [Test]
         public void FetchTest()
         {
-            this.cache.Locator = new TestCacheLocator();
+            this.cache.UrlLocator = new SimpleUrlLocator();
             this.cache.Handler = new TestCacheHandler();
+            this.cache.CacheLocator = new SimpleCacheLocator();
+            var cachePath = new SimpleCacheLocator().CreateCachePath("url");
 
             int count = 0;
-            Assert.IsFalse(this.cache.HasCache("url"));
+            Assert.IsFalse(this.cache.HasCache(cachePath));
 
             this.cache.Fetch("url")
                 .Subscribe(data =>
@@ -45,7 +48,7 @@ namespace Unicache.Test
                     Assert.AreEqual(data, new byte[] {0x01});
                 });
 
-            Assert.IsTrue(this.cache.HasCache("url"));
+            Assert.IsTrue(this.cache.HasCache(cachePath));
             Assert.AreEqual(count, 1);
 
             this.cache.Fetch("url")
@@ -55,7 +58,7 @@ namespace Unicache.Test
                     Assert.AreEqual(data, new byte[] {0x01});
                 });
 
-            Assert.IsTrue(this.cache.HasCache("url"));
+            Assert.IsTrue(this.cache.HasCache(cachePath));
             Assert.AreEqual(count, 2);
         }
 
@@ -64,14 +67,6 @@ namespace Unicache.Test
             protected override IObservable<byte[]> AsAsync(IObservable<byte[]> observable)
             {
                 return observable;
-            }
-        }
-
-        class TestCacheLocator : ICacheLocator
-        {
-            public string CreatePath(string url)
-            {
-                return url;
             }
         }
 

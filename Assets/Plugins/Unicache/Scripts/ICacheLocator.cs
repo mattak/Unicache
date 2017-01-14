@@ -1,8 +1,10 @@
-﻿namespace Unicache
+﻿using System.Collections.Generic;
+
+namespace Unicache
 {
-    // CacheLocator determinates save path from resource url
     public interface ICacheLocator
     {
-        string CreatePath(string url);
+        string CreateCachePath(string key);
+        IEnumerable<string> GetSameKeyCachePathes(string key, IEnumerable<string> cachePathes);
     }
 }

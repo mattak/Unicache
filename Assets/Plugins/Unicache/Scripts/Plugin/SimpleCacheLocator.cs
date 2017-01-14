@@ -1,21 +1,17 @@
-using System;
-using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace Unicache.Plugin
 {
     public class SimpleCacheLocator : ICacheLocator
     {
-        public string CreatePath(string url)
+        public string CreateCachePath(string key)
         {
-            return this.CreateHash(url);
+            return Digest.SHA1(key);
         }
 
-        private string CreateHash(string url)
+        public IEnumerable<string> GetSameKeyCachePathes(string key, IEnumerable<string> cachePathes)
         {
-            SHA1 sha = new SHA1CryptoServiceProvider();
-            byte[] request = System.Text.Encoding.UTF8.GetBytes(url);
-            byte[] result = sha.ComputeHash(request);
-            return BitConverter.ToString(result).ToLower().Replace("-", "");
+            return new string[0];
         }
     }
 }

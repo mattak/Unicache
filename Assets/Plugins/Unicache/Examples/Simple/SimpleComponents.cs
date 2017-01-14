@@ -4,9 +4,9 @@ using Unicache;
 using Unicache.Plugin;
 using UniRx;
 
-namespace UnicacheExample
+namespace UnicacheExample.Simple
 {
-    public class DownloadButtons : MonoBehaviour
+    public class SimpleComponents : MonoBehaviour
     {
         public Button LoadButton;
         public Button ClearCacheButton;
@@ -18,7 +18,8 @@ namespace UnicacheExample
         void Start()
         {
             this.cache.Handler = new SimpleDownloadHandler();
-            this.cache.Locator = new SimpleCacheLocator();
+            this.cache.UrlLocator = new SimpleUrlLocator();
+            this.cache.CacheLocator = new SimpleCacheLocator();
 
             this.LoadButton.onClick.AddListener(Fetch);
             this.ClearImageButton.onClick.AddListener(ClearImage);
