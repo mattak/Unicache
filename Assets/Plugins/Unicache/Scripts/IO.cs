@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Unicache
 {
@@ -21,7 +22,10 @@ namespace Unicache
 
             for (int i = 0; i < components.Length; i++)
             {
-                currentPath = Path.Combine(currentPath, components[i]);
+                // XXX: if directory start with "/" then Path.Combine ignores prefix "/" separator
+                currentPath = string.IsNullOrEmpty(components[i])
+                    ? "/"
+                    : Path.Combine(currentPath, components[i]);
 
                 if (!string.IsNullOrEmpty(currentPath) && !Directory.Exists(currentPath))
                 {
@@ -60,6 +64,22 @@ namespace Unicache
                 byte[] data = new byte[reader.Length];
                 reader.Read(data, 0, data.Length);
                 return data;
+            }
+        }
+
+        public static IEnumerable<string> RecursiveListFiles(string directory)
+        {
+            foreach (string file in Directory.GetFiles(directory))
+            {
+                yield return file;
+            }
+
+            foreach (string subDirectory in Directory.GetDirectories(directory))
+            {
+                foreach (string file in RecursiveListFiles(subDirectory))
+                {
+                    yield return file;
+                }
             }
         }
     }
