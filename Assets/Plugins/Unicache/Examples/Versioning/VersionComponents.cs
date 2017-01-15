@@ -7,15 +7,20 @@ using UnityEngine.UI;
 
 namespace UnicacheExample.Version
 {
-    public class VersionComponents : MonoBehaviour
+    public class VersionComponents : MonoBehaviour, IUnicacheGetter
     {
         public Button DownloadButton;
         public Button VersionUpButton;
         public Button ClearButton;
         public RawImage Image;
 
-        private IUnicache cache = new MemoryCache();
+        private IUnicache cache = new FileCache();
         private int count = 0;
+
+        public IUnicache Cache
+        {
+            get { return this.cache; }
+        }
 
         private Dictionary<string, string> versionMap = new Dictionary<string, string>()
         {
