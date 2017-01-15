@@ -20,49 +20,10 @@ namespace Unicache
         void OnGUI()
         {
             GUILayout.Label("Setting", EditorStyles.boldLabel);
-            this.Selected = this.LoadObject();
-            this.Selected =
-                EditorGUILayout.ObjectField(
-                    "IUnicacheGetter",
-                    this.Selected,
-                    typeof(GameObject),
-                    true
-                ) as GameObject;
-
-            var getter = (this.Selected != null)
-                ? this.Selected.GetComponent<IUnicacheGetter>()
-                : null;
-
-            if (getter != null)
-            {
-                var id = this.Selected.gameObject.GetInstanceID();
-                EditorPrefs.SetInt(ICacheGetterGameObjectId, id);
-                this.Cache = getter.Cache;
-            }
-            else
-            {
-                this.Selected = null;
-                this.Cache = null;
-            }
-
-            if (this.Selected == null)
-            {
-                EditorGUILayout.HelpBox(
-                    "Please Set GameObject which component implement IUnicacheGetter",
-                    MessageType.None);
-            }
+            this.Cache = this.RenderSettingSection();
 
             GUILayout.Label("Cache", EditorStyles.boldLabel);
-
-            if (this.Cache != null)
-            {
-                this.RenderCachePathHeader();
-
-                foreach (var path in this.Cache.ListPathes())
-                {
-                    this.RenderCachePath(path);
-                }
-            }
+            this.RenderCacheSection(this.Cache);
         }
 
         GameObject LoadObject()
@@ -78,6 +39,64 @@ namespace Unicache
             }
 
             return this.Selected;
+        }
+
+        void SaveObject(GameObject obj)
+        {
+            var id = obj.GetInstanceID();
+            EditorPrefs.SetInt(ICacheGetterGameObjectId, id);
+        }
+
+        IUnicache RenderSettingSection()
+        {
+            this.Selected = this.LoadObject();
+            this.Selected =
+                EditorGUILayout.ObjectField(
+                    "IUnicacheGetter",
+                    this.Selected,
+                    typeof(GameObject),
+                    true
+                ) as GameObject;
+
+            IUnicache cache = null;
+            var getter = (this.Selected != null)
+                ? this.Selected.GetComponent<IUnicacheGetter>()
+                : null;
+
+            if (getter != null)
+            {
+                this.SaveObject(this.Selected);
+                cache = getter.Cache;
+            }
+            else
+            {
+                this.Selected = null;
+                cache = null;
+            }
+
+            if (this.Selected == null)
+            {
+                EditorGUILayout.HelpBox(
+                    "Please Set GameObject which component implement IUnicacheGetter",
+                    MessageType.None);
+            }
+
+            return cache;
+        }
+
+        void RenderCacheSection(IUnicache cache)
+        {
+            if (cache == null)
+            {
+                return;
+            }
+
+            this.RenderCachePathHeader();
+
+            foreach (var path in cache.ListPathes())
+            {
+                this.RenderCachePath(path);
+            }
         }
 
         void RenderCachePathHeader()
