@@ -51,12 +51,17 @@ namespace Unicache
         {
             var allPathes = Directory.GetFiles(UnicacheConfig.Directory)
                 .Select(fullpath => fullpath.Replace(UnicacheConfig.Directory, ""));
-            var keyFiles = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
+            var keyPathes = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
 
-            foreach (var file in keyFiles)
+            foreach (var path in keyPathes)
             {
-                File.Delete(UnicacheConfig.Directory + file);
+                this.DeleteByPath(path);
             }
+        }
+
+        public void DeleteByPath(string path)
+        {
+            File.Delete(UnicacheConfig.Directory + path);
         }
 
         public byte[] GetCache(string key)
@@ -88,6 +93,14 @@ namespace Unicache
         private bool HasCacheByPath(string path)
         {
             return File.Exists(UnicacheConfig.Directory + path);
+        }
+
+        public IEnumerable<string> ListPathes()
+        {
+            return new List<string>(
+                IO.RecursiveListFiles(UnicacheConfig.Directory)
+                    .Select(fullpath => fullpath.Replace(UnicacheConfig.Directory, ""))
+            );
         }
     }
 }

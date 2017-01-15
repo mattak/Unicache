@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using System.Collections.Generic;
+using UniRx;
 
 namespace Unicache
 {
@@ -11,9 +12,10 @@ namespace Unicache
         IObservable<byte[]> Fetch(string key);
         void Clear();
         void Delete(string key);
-
+        void DeleteByPath(string path);
         byte[] GetCache(string key);
         void SetCache(string key, byte[] data);
         bool HasCache(string key);
+        IEnumerable<string> ListPathes();
     }
 }

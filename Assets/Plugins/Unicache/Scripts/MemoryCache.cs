@@ -49,8 +49,13 @@ namespace Unicache
 
             foreach (var path in keyPathes)
             {
-                this.MemoryMap.Remove(path);
+                this.DeleteByPath(path);
             }
+        }
+
+        public void DeleteByPath(string path)
+        {
+            this.MemoryMap.Remove(path);
         }
 
         public void Clear()
@@ -63,7 +68,7 @@ namespace Unicache
             return this.GetCacheByPath(this.CacheLocator.CreateCachePath(key));
         }
 
-        public byte[] GetCacheByPath(string path)
+        private byte[] GetCacheByPath(string path)
         {
             return this.MemoryMap[path];
         }
@@ -73,7 +78,7 @@ namespace Unicache
             this.SetCacheByPath(this.CacheLocator.CreateCachePath(key), data);
         }
 
-        public void SetCacheByPath(string path, byte[] data)
+        private void SetCacheByPath(string path, byte[] data)
         {
             this.MemoryMap[path] = data;
         }
@@ -83,9 +88,14 @@ namespace Unicache
             return this.HasCacheByPath(this.CacheLocator.CreateCachePath(key));
         }
 
-        public bool HasCacheByPath(string path)
+        private bool HasCacheByPath(string path)
         {
             return this.MemoryMap.ContainsKey(path);
+        }
+
+        public IEnumerable<string> ListPathes()
+        {
+            return new List<string>(this.MemoryMap.Keys);
         }
     }
 }
