@@ -1,7 +1,13 @@
 # Unicache
 
-# TODO
+Cache management system for Unity3D.
 
-- [ ] file with version /unicache/<file>/<version>.png
-- [ ] Clear each file
-- [ ] UniRx
+# Usage
+
+TODO: write
+
+# Example
+
+- [Simple](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Simple)
+- [Versioning](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Simple)
+
