@@ -107,6 +107,11 @@ namespace Unicache.Test
 
             this.cache.Delete("foo");
             Assert.IsFalse(this.cache.HasCache("foo"));
+
+            // exception check
+            Directory.Delete(UnicacheConfig.Directory, true);
+            Assert.IsFalse(this.cache.HasCache("foo"));
+            Assert.DoesNotThrow(() => this.cache.Delete("foo"));
         }
 
         class FileCacheForTest : FileCache
