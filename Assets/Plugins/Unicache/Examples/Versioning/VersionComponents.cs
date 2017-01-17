@@ -24,7 +24,7 @@ namespace UnicacheExample.Version
 
         private Dictionary<string, string> versionMap = new Dictionary<string, string>()
         {
-            {"sample", "0"},
+            {"cachepig", "0"},
         };
 
         void Start()
@@ -36,25 +36,33 @@ namespace UnicacheExample.Version
             this.DownloadButton.onClick.AddListener(this.Download);
             this.VersionUpButton.onClick.AddListener(this.VersionUp);
             this.ClearButton.onClick.AddListener(this.ClearImage);
+
+            this.Image.enabled = false;
         }
 
         void Download()
         {
-            this.cache.Fetch("sample")
-                .ByteToTexture2D()
-                .Subscribe(texture => this.Image.texture = texture)
+            this.cache.Fetch("cachepig")
+                .ByteToTexture2D(name: "cachepig")
+                .Subscribe(texture =>
+                {
+                    this.Image.texture = texture;
+                    this.Image.enabled = true;
+                })
                 .AddTo(this);
         }
 
         void VersionUp()
         {
             this.count++;
-            this.versionMap["sample"] = this.count.ToString();
+            this.versionMap["cachepig"] = this.count.ToString();
         }
 
         void ClearImage()
         {
+            Destroy(this.Image.texture);
             this.Image.texture = null;
+            this.Image.enabled = false;
         }
     }
 }

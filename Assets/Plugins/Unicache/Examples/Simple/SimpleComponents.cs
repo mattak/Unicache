@@ -25,26 +25,30 @@ namespace UnicacheExample.Simple
             this.ClearImageButton.onClick.AddListener(ClearImage);
             this.ClearCacheButton.onClick.AddListener(ClearCache);
             this.LoadingText.enabled = false;
+            this.Image.enabled = false;
         }
 
         void Fetch()
         {
             this.LoadingText.enabled = true;
 
-            var url = "https://raw.githubusercontent.com/mattak/Unicache/master/art/sample.jpg";
+            var url = "https://raw.githubusercontent.com/mattak/Unicache/master/art/cachepig.png";
 
             this.cache.Fetch(url)
-                .ByteToTexture2D()
+                .ByteToTexture2D(name: "cachepig")
                 .Subscribe(texture =>
                 {
                     this.LoadingText.enabled = false;
                     this.Image.texture = texture;
+                    this.Image.enabled = true;
                 });
         }
 
         void ClearImage()
         {
+            Destroy(this.Image.texture);
             this.Image.texture = null;
+            this.Image.enabled = false;
         }
 
         void ClearCache()
