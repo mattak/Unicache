@@ -44,18 +44,30 @@ namespace Unicache
 
         public void Clear()
         {
-            IO.CleanDirectory(UnicacheConfig.Directory);
+            try
+            {
+                IO.CleanDirectory(UnicacheConfig.Directory);
+            }
+            catch (DirectoryNotFoundException)
+            {
+            }
         }
 
         public void Delete(string key)
         {
-            var allPathes = Directory.GetFiles(UnicacheConfig.Directory)
-                .Select(fullpath => fullpath.Replace(UnicacheConfig.Directory, ""));
-            var keyPathes = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
-
-            foreach (var path in keyPathes)
+            try
             {
-                this.DeleteByPath(path);
+                var allPathes = Directory.GetFiles(UnicacheConfig.Directory)
+                    .Select(fullpath => fullpath.Replace(UnicacheConfig.Directory, ""));
+                var keyPathes = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
+
+                foreach (var path in keyPathes)
+                {
+                    this.DeleteByPath(path);
+                }
+            }
+            catch (DirectoryNotFoundException)
+            {
             }
         }
 
