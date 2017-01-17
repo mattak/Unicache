@@ -6,6 +6,10 @@ Cache management system for Unity3D.
 
 TODO: write
 
+# Dependencies
+
+- [UniRx](https://github.com/neuecc/UniRx)
+
 # Example
 
 - [Simple](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Simple)
