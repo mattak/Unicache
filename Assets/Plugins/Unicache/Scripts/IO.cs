@@ -69,16 +69,19 @@ namespace Unicache
 
         public static IEnumerable<string> RecursiveListFiles(string directory)
         {
-            foreach (string file in Directory.GetFiles(directory))
+            if (Directory.Exists(directory))
             {
-                yield return file;
-            }
-
-            foreach (string subDirectory in Directory.GetDirectories(directory))
-            {
-                foreach (string file in RecursiveListFiles(subDirectory))
+                foreach (string file in Directory.GetFiles(directory))
                 {
                     yield return file;
+                }
+
+                foreach (string subDirectory in Directory.GetDirectories(directory))
+                {
+                    foreach (string file in RecursiveListFiles(subDirectory))
+                    {
+                        yield return file;
+                    }
                 }
             }
         }

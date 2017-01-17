@@ -36,6 +36,9 @@ namespace Unicache.Test
                 "/tmp/unicache_test/a/b/c2",
                 "/tmp/unicache_test/a/b1",
             }, result.ToArray());
+
+            // check not throws exception if directory is empty
+            Assert.DoesNotThrow(() => IO.RecursiveListFiles("/tmp/uncache_test/unexist"));
         }
     }
 }
