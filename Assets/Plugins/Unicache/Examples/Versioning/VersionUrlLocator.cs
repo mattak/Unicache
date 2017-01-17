@@ -6,7 +6,7 @@ namespace UnicacheExample.Version
     {
         public string CreateUrl(string key)
         {
-            var url = string.Format("https://raw.githubusercontent.com/mattak/Unicache/master/art/{0}.jpg", key);
+            var url = string.Format("https://raw.githubusercontent.com/mattak/Unicache/master/art/{0}.png", key);
             return url;
         }
     }
