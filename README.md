@@ -2,6 +2,10 @@
 
 Cache management system for Unity3D.
 
+# Install
+
+Install into your project by using [latest unitypackage](https://github.com/mattak/Unicache/releases).
+
 # Usage
 
 ## 1. Create cache instance.
@@ -53,7 +57,7 @@ cache.Fetch("http:://localhost/image.png")
   .Subscribe(texture => rawImage.texture = texture);
 ```
 
-That's all !!
+That's all!!
 Simple usage and easy to cache.
 
 If you are interested in cache versioning, check [Versioning Example](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Versioning).
