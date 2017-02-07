@@ -70,3 +70,7 @@ If you are interested in cache versioning, check [Versioning Example](https://gi
 
 - [Simple](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Simple)
 - [Versioning](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Versioning)
+
+# LICENSE
+
+- [MIT](./LICENSE.md)
