@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using Unicache.Plugin;
+using UnicacheExample.Version;
 using UniRx;
 
 namespace Unicache.Test
@@ -74,27 +76,81 @@ namespace Unicache.Test
         public void FetchTest()
         {
             int count = 0;
-            Assert.IsFalse(this.cache.HasCache("foo"));
+            // fetch from download
+            {
+                Assert.IsFalse(this.cache.HasCache("foo"));
 
-            this.cache.Fetch("foo")
-                .Subscribe(data =>
-                {
-                    count++;
-                    Assert.AreEqual(data, new byte[] {0x01});
-                });
+                this.cache.Fetch("foo")
+                    .Subscribe(data =>
+                    {
+                        count++;
+                        Assert.AreEqual(data, new byte[] {0x01});
+                    });
 
-            Assert.IsTrue(this.cache.HasCache("foo"));
-            Assert.AreEqual(count, 1);
+                Assert.IsTrue(this.cache.HasCache("foo"));
+                Assert.AreEqual(count, 1);
+            }
 
-            this.cache.Fetch("foo")
-                .Subscribe(data =>
-                {
-                    count++;
-                    Assert.AreEqual(data, new byte[] {0x01});
-                });
+            // fetch from cache
+            {
+                this.cache.Fetch("foo")
+                    .Subscribe(data =>
+                    {
+                        count++;
+                        Assert.AreEqual(data, new byte[] {0x01});
+                    });
 
-            Assert.IsTrue(this.cache.HasCache("foo"));
-            Assert.AreEqual(count, 2);
+                Assert.IsTrue(this.cache.HasCache("foo"));
+                Assert.AreEqual(count, 2);
+            }
+        }
+
+        [Test]
+        public void FetchDeleteTest()
+        {
+            var count = 0;
+            var dir = UnicacheConfig.Directory;
+            var v1map = new Dictionary<String, String> {{"foo", "v1"}};
+            var v2map = new Dictionary<String, String> {{"foo", "v2"}};
+            var locator1 = new VersionCacheLocator(v1map);
+            var locator2 = new VersionCacheLocator(v2map);
+
+            // v1 download
+            {
+                this.cache.CacheLocator = locator1;
+                Assert.IsFalse(File.Exists(dir + locator1.CreateCachePath("foo")));
+                Assert.IsFalse(File.Exists(dir + locator2.CreateCachePath("foo")));
+
+                this.cache.Fetch("foo")
+                    .Subscribe(data =>
+                    {
+                        count++;
+                        Assert.AreEqual(data, new byte[] {0x01});
+                    });
+                Assert.IsTrue(this.cache.HasCache("foo"));
+                Assert.AreEqual(count, 1);
+                Assert.IsTrue(File.Exists(dir + locator1.CreateCachePath("foo")));
+                Assert.IsFalse(File.Exists(dir + locator2.CreateCachePath("foo")));
+            }
+
+            // check automatically remove outdated file
+            // version up & v2 download
+            {
+                this.cache.CacheLocator = locator2;
+                Assert.IsTrue(File.Exists(dir + locator1.CreateCachePath("foo")));
+                Assert.IsFalse(File.Exists(dir + locator2.CreateCachePath("foo")));
+
+                this.cache.Fetch("foo")
+                    .Subscribe(data =>
+                    {
+                        count++;
+                        Assert.AreEqual(data, new byte[] {0x01});
+                    });
+                Assert.IsTrue(this.cache.HasCache("foo"));
+                Assert.AreEqual(count, 2);
+                Assert.IsFalse(File.Exists(dir + locator1.CreateCachePath("foo")));
+                Assert.IsTrue(File.Exists(dir + locator2.CreateCachePath("foo")));
+            }
         }
 
         [Test]
