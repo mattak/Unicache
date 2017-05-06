@@ -13,10 +13,11 @@ namespace UnicacheExample.Simple
         public Button ClearImageButton;
         public RawImage Image;
         public Text LoadingText;
-        private IUnicache cache = new FileCache();
+        private IUnicache cache;
 
         void Start()
         {
+            this.cache = new FileCache();
             this.cache.Handler = new SimpleDownloadHandler();
             this.cache.UrlLocator = new SimpleUrlLocator();
             this.cache.CacheLocator = new SimpleCacheLocator();

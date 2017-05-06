@@ -10,9 +10,15 @@ namespace Unicache
         public ICacheHandler Handler { get; set; }
         public IUrlLocator UrlLocator { get; set; }
         public ICacheLocator CacheLocator { get; set; }
+        private string RootDirectory;
 
-        public FileCache()
+        public FileCache() : this(UnicacheConfig.Directory)
         {
+        }
+
+        public FileCache(string rootDirectory)
+        {
+            this.RootDirectory = rootDirectory;
         }
 
         public IObservable<byte[]> Fetch(string key)
@@ -46,7 +52,7 @@ namespace Unicache
         {
             try
             {
-                IO.CleanDirectory(UnicacheConfig.Directory);
+                IO.CleanDirectory(this.RootDirectory);
             }
             catch (DirectoryNotFoundException)
             {
@@ -57,8 +63,7 @@ namespace Unicache
         {
             try
             {
-                var allPathes = Directory.GetFiles(UnicacheConfig.Directory)
-                    .Select(fullpath => fullpath.Replace(UnicacheConfig.Directory, ""));
+                var allPathes = ListPathes();
                 var keyPathes = new List<string>(this.CacheLocator.GetSameKeyCachePathes(key, allPathes));
 
                 foreach (var path in keyPathes)
@@ -73,7 +78,7 @@ namespace Unicache
 
         public void DeleteByPath(string path)
         {
-            File.Delete(UnicacheConfig.Directory + path);
+            File.Delete(this.RootDirectory + path);
         }
 
         public byte[] GetCache(string key)
@@ -81,9 +86,9 @@ namespace Unicache
             return this.GetCacheByPath(this.CacheLocator.CreateCachePath(key));
         }
 
-        private byte[] GetCacheByPath(string path)
+        protected byte[] GetCacheByPath(string path)
         {
-            return IO.Read(UnicacheConfig.Directory + path);
+            return IO.Read(this.RootDirectory + path);
         }
 
         public void SetCache(string key, byte[] data)
@@ -91,10 +96,10 @@ namespace Unicache
             this.SetCacheByPath(this.CacheLocator.CreateCachePath(key), data);
         }
 
-        private void SetCacheByPath(string path, byte[] data)
+        protected void SetCacheByPath(string path, byte[] data)
         {
-            IO.MakeParentDirectory(UnicacheConfig.Directory + path);
-            IO.Write(UnicacheConfig.Directory + path, data);
+            IO.MakeParentDirectory(this.RootDirectory + path);
+            IO.Write(this.RootDirectory + path, data);
         }
 
         public bool HasCache(string key)
@@ -102,16 +107,16 @@ namespace Unicache
             return this.HasCacheByPath(this.CacheLocator.CreateCachePath(key));
         }
 
-        private bool HasCacheByPath(string path)
+        protected bool HasCacheByPath(string path)
         {
-            return File.Exists(UnicacheConfig.Directory + path);
+            return File.Exists(this.RootDirectory + path);
         }
 
         public IEnumerable<string> ListPathes()
         {
             return new List<string>(
-                IO.RecursiveListFiles(UnicacheConfig.Directory)
-                    .Select(fullpath => fullpath.Replace(UnicacheConfig.Directory, ""))
+                IO.RecursiveListFiles(this.RootDirectory)
+                    .Select(fullpath => fullpath.Replace(this.RootDirectory, ""))
             );
         }
     }
