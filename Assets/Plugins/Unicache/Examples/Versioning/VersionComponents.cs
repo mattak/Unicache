@@ -14,12 +14,12 @@ namespace UnicacheExample.Version
         public Button ClearButton;
         public RawImage Image;
 
-        private IUnicache cache = new FileCache();
+        private IUnicache _cache;
         private int count = 0;
 
         public IUnicache Cache
         {
-            get { return this.cache; }
+            get { return this._cache = this._cache ?? new FileCache(); }
         }
 
         private Dictionary<string, string> versionMap = new Dictionary<string, string>()
@@ -29,9 +29,9 @@ namespace UnicacheExample.Version
 
         void Start()
         {
-            this.cache.CacheLocator = new VersionCacheLocator(this.versionMap);
-            this.cache.Handler = new SimpleDownloadHandler();
-            this.cache.UrlLocator = new VersionUrlLocator();
+            this.Cache.CacheLocator = new VersionCacheLocator(this.versionMap);
+            this.Cache.Handler = new SimpleDownloadHandler();
+            this.Cache.UrlLocator = new VersionUrlLocator();
 
             this.DownloadButton.onClick.AddListener(this.Download);
             this.VersionUpButton.onClick.AddListener(this.VersionUp);
@@ -42,7 +42,7 @@ namespace UnicacheExample.Version
 
         void Download()
         {
-            this.cache.Fetch("cachepig")
+            this.Cache.Fetch("cachepig")
                 .ByteToTexture2D(name: "cachepig")
                 .Subscribe(texture =>
                 {
