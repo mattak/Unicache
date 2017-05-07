@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unicache.Plugin;
 using UniRx;
 
 namespace Unicache
@@ -8,11 +9,19 @@ namespace Unicache
         public ICacheHandler Handler { get; set; }
         public IUrlLocator UrlLocator { get; set; }
         public ICacheLocator CacheLocator { get; set; }
+        public ICacheEncoder Encoder { get; set; }
+        public ICacheDecoder Decoder { get; set; }
 
         private IDictionary<string, byte[]> MemoryMap = new Dictionary<string, byte[]>();
 
-        public MemoryCache()
+        public MemoryCache() : this(new VoidEncoderDecoder())
         {
+        }
+
+        public MemoryCache(ICacheEncoderDecoder encoderDecoder)
+        {
+            this.Encoder = encoderDecoder;
+            this.Decoder = encoderDecoder;
         }
 
         public IObservable<byte[]> Fetch(string key)
@@ -70,7 +79,8 @@ namespace Unicache
 
         private byte[] GetCacheByPath(string path)
         {
-            return this.MemoryMap[path];
+            var data = this.MemoryMap[path];
+            return this.Decoder.Decode(data);
         }
 
         public void SetCache(string key, byte[] data)
@@ -80,7 +90,8 @@ namespace Unicache
 
         private void SetCacheByPath(string path, byte[] data)
         {
-            this.MemoryMap[path] = data;
+            var writeData = this.Encoder.Encode(data);
+            this.MemoryMap[path] = writeData;
         }
 
         public bool HasCache(string key)

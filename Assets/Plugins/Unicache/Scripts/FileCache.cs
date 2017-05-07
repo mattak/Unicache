@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unicache.Plugin;
 using UniRx;
 
 namespace Unicache
@@ -10,15 +11,19 @@ namespace Unicache
         public ICacheHandler Handler { get; set; }
         public IUrlLocator UrlLocator { get; set; }
         public ICacheLocator CacheLocator { get; set; }
+        public ICacheEncoder Encoder { get; set; }
+        public ICacheDecoder Decoder { get; set; }
         private string RootDirectory;
 
-        public FileCache() : this(UnicacheConfig.Directory)
+        public FileCache() : this(UnicacheConfig.Directory, new VoidEncoderDecoder())
         {
         }
 
-        public FileCache(string rootDirectory)
+        public FileCache(string rootDirectory, ICacheEncoderDecoder encoderDecoder)
         {
             this.RootDirectory = rootDirectory;
+            this.Encoder = encoderDecoder;
+            this.Decoder = encoderDecoder;
         }
 
         public IObservable<byte[]> Fetch(string key)
@@ -88,7 +93,8 @@ namespace Unicache
 
         protected byte[] GetCacheByPath(string path)
         {
-            return IO.Read(this.RootDirectory + path);
+            var data = IO.Read(this.RootDirectory + path);
+            return this.Decoder.Decode(data);
         }
 
         public void SetCache(string key, byte[] data)
@@ -98,8 +104,9 @@ namespace Unicache
 
         protected void SetCacheByPath(string path, byte[] data)
         {
+            byte[] writeData = this.Encoder.Encode(data);
             IO.MakeParentDirectory(this.RootDirectory + path);
-            IO.Write(this.RootDirectory + path, data);
+            IO.Write(this.RootDirectory + path, writeData);
         }
 
         public bool HasCache(string key)
