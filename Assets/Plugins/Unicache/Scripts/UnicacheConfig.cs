@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unicache.Plugin;
+using UnityEngine;
 
 namespace Unicache
 {

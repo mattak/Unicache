@@ -8,6 +8,8 @@ namespace Unicache
         ICacheHandler Handler { set; }
         IUrlLocator UrlLocator { set; }
         ICacheLocator CacheLocator { set; }
+        ICacheEncoder Encoder { set; }
+        ICacheDecoder Decoder { set; }
 
         IObservable<byte[]> Fetch(string key);
         void Clear();
