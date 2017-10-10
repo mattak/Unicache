@@ -36,7 +36,7 @@ namespace Unicache.Plugin
 
         private bool isSuccess(UnityWebRequest request)
         {
-            return !request.isError && (request.responseCode == 200 || request.responseCode == 304);
+            return !request.isNetworkError && (request.responseCode == 200 || request.responseCode == 304);
         }
     }
 }
