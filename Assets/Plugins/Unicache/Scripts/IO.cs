@@ -51,7 +51,7 @@ namespace Unicache
 
         public static void Write(string fullpath, byte[] data)
         {
-            using (var writer = new FileStream(fullpath, FileMode.Create))
+            using (var writer = new FileStream(fullpath, FileMode.Create, FileAccess.Write))
             {
                 writer.Write(data, 0, data.Length);
             }
@@ -59,7 +59,7 @@ namespace Unicache
 
         public static byte[] Read(string fullpath)
         {
-            using (var reader = new FileStream(fullpath, FileMode.Open))
+            using (var reader = new FileStream(fullpath, FileMode.Open, FileAccess.Read))
             {
                 byte[] data = new byte[reader.Length];
                 reader.Read(data, 0, data.Length);
