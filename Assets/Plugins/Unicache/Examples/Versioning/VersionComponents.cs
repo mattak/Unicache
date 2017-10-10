@@ -19,7 +19,7 @@ namespace UnicacheExample.Version
 
         public IUnicache Cache
         {
-            get { return this._cache = this._cache ?? new FileCache(); }
+            get { return this._cache = this._cache ?? new FileCache(this.gameObject); }
         }
 
         private Dictionary<string, string> versionMap = new Dictionary<string, string>()
@@ -45,10 +45,12 @@ namespace UnicacheExample.Version
             this.Cache.Fetch("cachepig")
                 .ByteToTexture2D(name: "cachepig")
                 .Subscribe(texture =>
-                {
-                    this.Image.texture = texture;
-                    this.Image.enabled = true;
-                })
+                    {
+                        UnityEngine.Debug.Log("Download");
+                        this.Image.texture = texture;
+                        this.Image.enabled = true;
+                    }
+                )
                 .AddTo(this);
         }
 
