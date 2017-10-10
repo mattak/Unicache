@@ -6,13 +6,43 @@ namespace Unicache.Test
 {
     public class IOTest
     {
+        private string TestRootDir = "/tmp/unicache_test";
+        private string TestFile1 = "/tmp/unicache_test/file1";
+
         [SetUp]
         public void Setup()
         {
-            if (Directory.Exists("/tmp/unicache_test"))
+            this.Clear();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            this.Clear();
+        }
+
+        private void Clear()
+        {
+            if (File.Exists(this.TestFile1))
             {
-                Directory.Delete("/tmp/unicache_test", true);
+                File.Delete(this.TestFile1);
             }
+
+            if (Directory.Exists(this.TestRootDir))
+            {
+                Directory.Delete(this.TestRootDir, true);
+            }
+        }
+
+        [Test]
+        public void WriteReadTest()
+        {
+            IO.MakeDirectory(this.TestRootDir);
+            Assert.IsFalse(File.Exists(this.TestFile1));
+
+            IO.Write(this.TestFile1, new byte[] {0x0a});
+            Assert.IsTrue(File.Exists(this.TestFile1));
+            Assert.AreEqual(new byte[] {0x0a}, IO.Read(this.TestFile1));
         }
 
         [Test]
