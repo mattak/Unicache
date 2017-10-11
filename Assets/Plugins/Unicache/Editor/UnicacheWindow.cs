@@ -16,6 +16,7 @@ namespace Unicache
         private IUnicache Cache;
         private int SelectedInstanceId = -1;
         private const string ICacheGetterGameObjectId = "UnicacheWindow.IUnicacheGetter";
+        private Vector2 _scrollPosition = Vector2.zero;
 
         void OnGUI()
         {
@@ -91,11 +92,17 @@ namespace Unicache
                 return;
             }
 
-            this.RenderCachePathHeader();
-
-            foreach (var path in cache.ListPathes())
             {
-                this.RenderCachePath(path);
+                this._scrollPosition = EditorGUILayout.BeginScrollView(this._scrollPosition, GUI.skin.box);
+
+                this.RenderCachePathHeader();
+
+                foreach (var path in cache.ListPathes())
+                {
+                    this.RenderCachePath(path);
+                }
+
+                EditorGUILayout.EndScrollView();
             }
         }
 
