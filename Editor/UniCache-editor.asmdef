@@ -1,0 +1,12 @@
+{
+    "name": "UniCache-editor",
+    "references": [
+        "UniCache"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
