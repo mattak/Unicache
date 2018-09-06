@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UniRx;
 using UnityEngine.Networking;
@@ -7,7 +7,7 @@ namespace Unicache.Plugin
 {
     public class SimpleDownloadHandler : ICacheHandler
     {
-        public IObservable<byte[]> Fetch(string url)
+        public UniRx.IObservable<byte[]> Fetch(string url)
         {
             return Observable.FromCoroutine<byte[]>(observer =>
                 this.FetchCoroutine(
