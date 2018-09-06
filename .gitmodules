@@ -1,0 +1,4 @@
+[submodule "UniRx"]
+	path = UniRx
+	url = git@github.com:secretlocation/UniRx-core.git
+	branch = develop
