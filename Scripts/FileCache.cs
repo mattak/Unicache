@@ -156,7 +156,11 @@ namespace Unicache
                         .Select(data => command.SetData(data))
                 )
                 .Do(command => this.AsyncDeleteAndSetCache(obj, command))
-                .Catch<Command, Exception>(exception => Observable.Never<Command>())
+	            .Catch<Command, Exception>(exception =>
+	            {
+		            this.ResultQueue.OnError(exception);
+		            return Observable.Never<Command>();
+	            })
                 .Subscribe(command => this.ResultQueue.OnNext(command))
                 .AddTo(obj);
         }
