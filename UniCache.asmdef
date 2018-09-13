@@ -1,0 +1,10 @@
+{
+    "name": "UniCache",
+    "references": [
+        "UniRx"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
