@@ -71,6 +71,10 @@ If you are interested in cache versioning, check [Versioning Example](https://gi
 - [Simple](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Simple)
 - [Versioning](https://github.com/mattak/Unicache/tree/master/Assets/Plugins/Unicache/Examples/Versioning)
 
+# Thanks
+
+- [@nastajus](https://github.com/nastajus) for fixing onError handling bug.
+
 # LICENSE
 
 - [MIT](./LICENSE.md)
