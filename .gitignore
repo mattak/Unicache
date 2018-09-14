@@ -31,3 +31,8 @@ sysinfo.txt
 *.unitypackage
 
 .idea/
+
+# rider
+Assets/Plugins/Editor.meta
+Assets/Plugins/Editor/
+
