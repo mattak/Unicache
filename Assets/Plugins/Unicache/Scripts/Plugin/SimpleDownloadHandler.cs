@@ -22,7 +22,7 @@ namespace Unicache.Plugin
         {
             UnityWebRequest request = UnityWebRequest.Get(url);
 
-            yield return request.Send();
+            yield return request.SendWebRequest();
 
             if (isSuccess(request))
             {

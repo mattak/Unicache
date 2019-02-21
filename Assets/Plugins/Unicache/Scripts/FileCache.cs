@@ -54,7 +54,7 @@ namespace Unicache
             this.BuildQueue(gameObject);
         }
 
-        public UniRx.IObservable<byte[]> Fetch(string key)
+        public IObservable<byte[]> Fetch(string key)
         {
             var url = this.UrlLocator.CreateUrl(key);
             var path = this.CacheLocator.CreateCachePath(key);
@@ -165,8 +165,8 @@ namespace Unicache
                 .AddTo(obj);
         }
 
-        protected virtual UniRx.IObservable<Command> AsyncSetCommandGetCacheByPath(
-            UniRx.IObservable<Command> observable)
+        protected virtual IObservable<Command> AsyncSetCommandGetCacheByPath(
+            IObservable<Command> observable)
         {
             return observable
                     .ObserveOn(Scheduler.ThreadPool)
