@@ -184,7 +184,7 @@ namespace Unicache.Test
             {
             }
 
-            protected override UniRx.IObservable<Command> AsyncSetCommandGetCacheByPath(UniRx.IObservable<Command> observable)
+            protected override IObservable<Command> AsyncSetCommandGetCacheByPath(IObservable<Command> observable)
             {
                 return observable.Select(_command => this.SetCommandGetCacheByPath(_command));
             }
@@ -197,7 +197,7 @@ namespace Unicache.Test
 
         class TestCacheHandler : ICacheHandler
         {
-            public UniRx.IObservable<byte[]> Fetch(string key)
+            public IObservable<byte[]> Fetch(string key)
             {
                 if (key.Equals("foo"))
                 {

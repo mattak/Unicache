@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UniRx;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Unicache
 {
